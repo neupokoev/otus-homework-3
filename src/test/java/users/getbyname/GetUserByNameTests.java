@@ -1,16 +1,14 @@
-package users.create;
+package users.getbyname;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.lessThan;
 
 import dto.UserDTO;
-import io.restassured.module.jsv.JsonSchemaValidator;
-import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import users.UserBaseTest;
 
-public class CreateUserTests extends UserBaseTest {
+public class GetUserByNameTests extends UserBaseTest {
 
   private final String userName = String.valueOf(System.currentTimeMillis());
   private final String firstName = "Alena";
@@ -20,9 +18,8 @@ public class CreateUserTests extends UserBaseTest {
   private final long userStatus = 999L;
   private final long id = 681404L;
 
-  @Test
-  public void createUserPositiveTest() {
-    //подготовить данные для создания пользователя
+  @BeforeEach
+  public void createUserForTest() {
     UserDTO user = UserDTO.builder()
         .id(id)
         .username(userName)
@@ -32,28 +29,19 @@ public class CreateUserTests extends UserBaseTest {
         .phone(phone)
         .email(email)
         .build();
+    userApi.createUser(user).body("code", equalTo(200));
+    //userApi.authorizeUser(userName);
+  }
 
-    //поискать пользователя по имени - такого нет в системе - ответ 404
-    userApi.getUserByName(userName)
-        .then()
-        .statusCode(404);
+  @Test
+  public void getExistedUserByNameUserTest() {
 
-    //создать нового пользователя в системе
-    ValidatableResponse response = userApi.createUser(user)
-        .time(lessThan(5000L))
-        .body("message", equalTo(Long.toString(id)))
-        .body("code", equalTo(200))
-        .body("type", equalTo("unknown"))
-        .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schema/CreateUser.json"));
-
-    //получить пользователя по имени - теперь он есть (должен быть)
     UserDTO userGettingResponse = userApi.getUserByName(userName)
         .then()
         .statusCode(200)
         .log().all()
         .extract().body().as(UserDTO.class);
 
-    //проверить, что все характеристики нового пользователя совпадают с ожидаемыми
     Assertions.assertEquals(id, userGettingResponse.getId(),
         "Incorrect id field value");
     Assertions.assertEquals(userStatus, userGettingResponse.getUserStatus(),

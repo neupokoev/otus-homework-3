@@ -11,13 +11,13 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
-    private String email;
-    private String firstName;
-    private Long id;
-    private String lastName;
-    private String password;
-    private String phone;
-    private Long userStatus;
-    @JsonProperty("username")
-    private String username;
+  private String email;
+  private String firstName;
+  private Long id;
+  private String lastName;
+  private String password;
+  private String phone;
+  private Long userStatus;
+  @JsonProperty("username")
+  private String username;
 }

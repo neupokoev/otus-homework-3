@@ -15,7 +15,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserOut {
 
-    private Long code;
-    private String message;
-    private String type;
+  private Long code;
+  private String message;
+  private String type;
 }

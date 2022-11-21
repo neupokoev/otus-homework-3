@@ -2,8 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "code":  {
-
+    "code": {
       "type": "integer",
       "minimum": 100,
       "maximum": 500
@@ -15,6 +14,10 @@
       "type": "string"
     }
   },
-  "required": [ "code",  "type", "message"],
+  "required": [
+    "code",
+    "type",
+    "message"
+  ],
   "additionalProperties": false
 }

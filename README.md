@@ -8,6 +8,12 @@
 ```bash
 git clone https://github.com/neupokoev/otus-homework-3.git
 ```
-2. Открыть проект в IIdea и запустить :-)
-
-Тест кейсы находятся в репозиториий в файле [tests.xlsx](https://github.com/neupokoev/otus-homework-3/blob/main/src/test/resources/tests.xlsx) 
+2. Перейти в каталог `otus-homework-3`
+```bash
+cd otus-homework-3
+```
+3. Запустить тесты
+```bash
+mvn clean -Dbase.url="https://petstore.swagger.io/v2" test
+```
+Тест кейсы находятся в репозиторий в файле [tests.xlsx](https://github.com/neupokoev/otus-homework-3/blob/main/src/test/resources/tests.xlsx) 
