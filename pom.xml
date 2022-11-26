@@ -18,6 +18,7 @@
         <checkstyle-plugin.version>3.1.0</checkstyle-plugin.version>
         <findbugs-plugin.version>3.0.5</findbugs-plugin.version>
         <base.url>https://petstore.swagger.io/v2</base.url>
+        <guice.version>5.1.0</guice.version>
     </properties>
 
     <dependencies>
@@ -26,7 +27,6 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>5.3.0</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -59,6 +59,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
         </dependency>
     </dependencies>
     <build>

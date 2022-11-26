@@ -1,11 +1,23 @@
 package users.getbyname;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 import dto.UserOut;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import users.UserBaseTest;
+import services.UserApi;
+import support.UserModule;
 
-public class GetUserWithErrorTests extends UserBaseTest {
+public class GetUserWithErrorTests {
+
+  @Inject
+  private UserApi userApi;
+
+  @BeforeEach
+  public void setup() {
+    Guice.createInjector(new UserModule()).injectMembers(this);
+  }
 
   @Test
   public void getUserByNameWith404ErrorTest() {

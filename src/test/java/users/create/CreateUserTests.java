@@ -3,14 +3,18 @@ package users.create;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 import dto.UserDTO;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import users.UserBaseTest;
+import services.UserApi;
+import support.UserModule;
 
-public class CreateUserTests extends UserBaseTest {
+public class CreateUserTests {
 
   private final String userName = String.valueOf(System.currentTimeMillis());
   private final String firstName = "Alena";
@@ -19,6 +23,14 @@ public class CreateUserTests extends UserBaseTest {
   private final String email = "email@mail.ru";
   private final long userStatus = 999L;
   private final long id = 681404L;
+
+  @Inject
+  public UserApi userApi;
+
+  @BeforeEach
+  public void setup() {
+    Guice.createInjector(new UserModule()).injectMembers(this);
+  }
 
   @Test
   public void createUserPositiveTest() {

@@ -2,13 +2,16 @@ package users.getbyname;
 
 import static org.hamcrest.Matchers.equalTo;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 import dto.UserDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import users.UserBaseTest;
+import services.UserApi;
+import support.UserModule;
 
-public class GetUserByNameTests extends UserBaseTest {
+public class GetUserByNameTests {
 
   private final String userName = String.valueOf(System.currentTimeMillis());
   private final String firstName = "Alena";
@@ -18,8 +21,12 @@ public class GetUserByNameTests extends UserBaseTest {
   private final long userStatus = 999L;
   private final long id = 681404L;
 
+  @Inject
+  public UserApi userApi;
+
   @BeforeEach
   public void createUserForTest() {
+    Guice.createInjector(new UserModule()).injectMembers(this);
     UserDTO user = UserDTO.builder()
         .id(id)
         .username(userName)
