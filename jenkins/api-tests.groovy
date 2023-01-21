@@ -7,7 +7,7 @@ timeout(60) {
             def exitCode = sh(
                     returnStatus: true,
                     script: """
-                    mvn test -DbaseUrl=$API_URL -Durl=$SUB_URL -DuserStatus=$USER_STATUS -Demail=$EMAIL -Did=$ID -DfirstName=$FIRST_NAME -DlastName=$LAST_NAME -Dphone=$PHONE -Dpasssword=$PASSWORD -Dusername=$USERNAME
+                    mvn test -Dbase.url=$API_URL
                     """
             )
 
