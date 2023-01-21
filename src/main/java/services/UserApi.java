@@ -12,15 +12,15 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 public class UserApi implements IUserApi {
-  private final String user;
+  private final String userUrl;
   private final String baseUrl;
   private final RequestSpecification requestSpecification;
   private final ResponseSpecification responseSpecification;
 
   @Inject
   public UserApi() {
-    baseUrl = System.getProperty("base.url", "https://petstore.swagger.io/v");
-    this.user = "/user";
+    baseUrl = System.getProperty("base.url", "https://petstore.swagger.io/v2");
+    this.userUrl = "/user";
     this.requestSpecification = RestAssured.given()
         .baseUri(baseUrl)
         .contentType(ContentType.JSON)
@@ -35,7 +35,7 @@ public class UserApi implements IUserApi {
     return RestAssured.given(requestSpecification)
         .body(user)
         .when()
-        .post(this.user)
+        .post(userUrl)
         .then()
         .spec(responseSpecification);
   }
@@ -44,7 +44,7 @@ public class UserApi implements IUserApi {
     return RestAssured.given(requestSpecification)
         .body(jsonString)
         .when()
-        .post(user)
+        .post(userUrl)
         .then()
         .log().all();
   }
@@ -52,13 +52,13 @@ public class UserApi implements IUserApi {
   public Response getUserByName(String userName) {
     return RestAssured.given(requestSpecification)
         .when()
-        .get(user + "/" + userName);
+        .get(userUrl + "/" + userName);
   }
 
   public void authorizeUser(String userName, String password) {
     RestAssured.given(requestSpecification)
         .when()
-        .get(user + "/" + "login?username=" + userName + "&password=" + password)
+        .get(userUrl + "/" + "login?username=" + userName + "&password=" + password)
         .then()
         .log().all();
   }

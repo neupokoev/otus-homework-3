@@ -11,14 +11,22 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.version>5.6.2</junit.version>
+        <junit.version>5.8.1</junit.version>
         <rest.version>5.2.0</rest.version>
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
-        <surefire.plugin.version>2.22.2</surefire.plugin.version>
+        <surefire.plugin.version>3.0.0-M5</surefire.plugin.version>
         <checkstyle-plugin.version>3.1.0</checkstyle-plugin.version>
         <findbugs-plugin.version>3.0.5</findbugs-plugin.version>
         <base.url>https://petstore.swagger.io/v2</base.url>
         <guice.version>5.1.0</guice.version>
+
+        <forkCount>1</forkCount>
+        <reuseForks>true</reuseForks>
+        <parallel>all</parallel>
+        <perCoreThreadCount>false</perCoreThreadCount>
+        <useUnlimitedThreads>true</useUnlimitedThreads>
+        <thread.count>32</thread.count>
+        <aspectj.version>1.9.19</aspectj.version>
     </properties>
 
     <dependencies>
@@ -66,6 +74,24 @@
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <version>2.13.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>2.13.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -74,18 +100,63 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.plugin.version}</version>
                 <configuration>
+                    <forkCount>${forkCount}</forkCount>
+                    <reuseForks>${reuseForks}</reuseForks>
+                    <parallel>${parallel}</parallel>
+                    <perCoreThreadCount>${perCoreThreadCount}</perCoreThreadCount>
+                    <useUnlimitedThreads>${useUnlimitedThreads}</useUnlimitedThreads>
+                    <threadCountMethods>${thread.count}</threadCountMethods>
+
+                    <systemProperties>
+                        <property>
+                            <name>allure.results.directory</name>
+                            <value>${project.basedir}/allure-results</value>
+                        </property>
+                        <property>
+                            <name>junit.jupiter.extensions.autodetection.enabled</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
+
                     <systemPropertyVariables>
                         <base.url>${base.url}</base.url>
                         <test.project.status>test</test.project.status>
                     </systemPropertyVariables>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>io.qameta.allure.junit5.AllureJunit5</value>
+                        </property>
+                    </properties>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
                 </configuration>
                 <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-api</artifactId>
+                        <version>${junit.version}</version>
+                    </dependency>
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
                         <version>${junit.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.10.0</version>
+                <configuration>
+                    <reportVersion>2.4.1</reportVersion>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

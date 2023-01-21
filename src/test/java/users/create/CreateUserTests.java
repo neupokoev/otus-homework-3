@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.lessThan;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import dto.UserDTO;
+import io.qameta.allure.Step;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
@@ -23,9 +24,11 @@ public class CreateUserTests {
   private final String email = "email@mail.ru";
   private final long userStatus = 999L;
   private final long id = 681404L;
-
   @Inject
   public UserApi userApi;
+  UserDTO userGettingResponse;
+  private ValidatableResponse response;
+  private UserDTO user;
 
   @BeforeEach
   public void setup() {
@@ -34,8 +37,18 @@ public class CreateUserTests {
 
   @Test
   public void createUserPositiveTest() {
+
+    prepareDataToCreateUser("подготовить данные для создания пользователя");
+    check404StatusCodeAfterSearch("поискать пользователя по имени - такого нет в системе - ответ 404");
+    createNewUser("создать нового пользователя в системе");
+    getUserByName("получить пользователя по имени - теперь он есть (должен быть)");
+    checkForCorrections("проверить, что все характеристики нового пользователя совпадают с ожидаемыми");
+  }
+
+  @Step("Step {step}")
+  public void prepareDataToCreateUser(String step) {
     //подготовить данные для создания пользователя
-    UserDTO user = UserDTO.builder()
+    user = UserDTO.builder()
         .id(id)
         .username(userName)
         .userStatus(userStatus)
@@ -44,27 +57,39 @@ public class CreateUserTests {
         .phone(phone)
         .email(email)
         .build();
+  }
 
+  @Step("Step {step}")
+  public void check404StatusCodeAfterSearch(String step) {
     //поискать пользователя по имени - такого нет в системе - ответ 404
     userApi.getUserByName(userName)
         .then()
         .statusCode(404);
+  }
 
+  @Step("Step {step}")
+  public void createNewUser(String step) {
     //создать нового пользователя в системе
-    ValidatableResponse response = userApi.createUser(user)
+    response = userApi.createUser(user)
         .time(lessThan(5000L))
         .body("message", equalTo(Long.toString(id)))
         .body("code", equalTo(200))
         .body("type", equalTo("unknown"))
         .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schema/CreateUser.json"));
+  }
 
+  @Step("Step {step}")
+  public void getUserByName(String step) {
     //получить пользователя по имени - теперь он есть (должен быть)
-    UserDTO userGettingResponse = userApi.getUserByName(userName)
+    userGettingResponse = userApi.getUserByName(userName)
         .then()
         .statusCode(200)
         .log().all()
         .extract().body().as(UserDTO.class);
+  }
 
+  @Step("Step {step}")
+  public void checkForCorrections(String step) {
     //проверить, что все характеристики нового пользователя совпадают с ожидаемыми
     Assertions.assertEquals(id, userGettingResponse.getId(),
         "Incorrect id field value");
